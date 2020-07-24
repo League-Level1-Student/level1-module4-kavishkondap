@@ -27,29 +27,45 @@ public class SimonSays extends KeyAdapter {
 	private int tries = 0;
 	private boolean simonSays = false;
 	Date timeAtStart;
-
+	int score = 0;
 	// Complete steps 1 - 7 before you test
 	// 1. Declare a JFrame variable
+	JFrame frame;
 
 	public void run() {
 		// 2. Add the four images that match keyboard keys like this:
 		// images.put(KeyEvent.VK_UP, "up.jpg");
-
+		images.put(KeyEvent.VK_UP, "up.jpg");
+		images.put(KeyEvent.VK_DOWN, "down.jpg");
+		images.put(KeyEvent.VK_LEFT, "left.jpg");
+		images.put(KeyEvent.VK_RIGHT, "right.jpg");
 		// 3. Use a JOptionPane to tell the user the rules: "Press the matching
 		// key when
 		// 'Simon says' otherwise press a different key"
-
+		JOptionPane.showMessageDialog(null, "Press the matching key when Simon says, otherwise press a different key");
 		// 4. Call the showImage method to show an image
-
+		showImage();
 	}
 
 	public void keyPressed(KeyEvent e) {
 		// 15. Make a points variable to track the score.
-
+		
 		// 16. If the keyCode matches the imageIndex and "Simon says"
-
+		if ((simonSays) && (e.getKeyCode() == imageIndex)) {
+			score++;
+			speak("Correct");
+		} else if ((simonSays == false) && (e.getKeyCode() != imageIndex)) {
+			score++;
+			speak("Correct");
+		} else if ((simonSays) && (e.getKeyCode() != imageIndex)) {
+			score--;
+			speak("Wrong");
+		} else if ((simonSays == false) && (e.getKeyCode() == imageIndex)) {
+			score--;
+			speak("Wrong");
+		}
 		// 17. Increase the value of score
-
+		tries++;
 		// 18. Use the speak method to tell the user they were correct
 
 		// 19. If the keyCode doesn't match the imageIndex and "Simon didn't
@@ -64,36 +80,48 @@ public class SimonSays extends KeyAdapter {
 		// 25. If tries is greater than 9 (or however many you want)...
 
 		// 26. Tell the user their score
-
+		if (tries > 9) {
+			JOptionPane.showMessageDialog(null, "Your final score was " + score);
+			System.exit(0);
+		} else {
+			JOptionPane.showMessageDialog(null, "Your  score is "  + score);
+		}
 		// 27. Exit the program
 
 		// 23. Dispose of the frame
-
+		frame.dispose();
 		// 24. Call the showImage method to show a new image
+		showImage();
 	}
 
 	private void showImage() {
 		// 5. Initialize your frame to a new JFrame()
-
+		frame = new JFrame();
 		// 6. Set the frame to visible
-
+		frame.setVisible(true);
 		// 7. Uncomment the following line to add a random image to your frame
-		// frame.add(getNextRandomImage());
+		frame.add(getNextRandomImage());
 
 		// 8. Set the name of your frame
-
+		frame.setName("SimonSays");
 		// 9. Pack the frame
-
+		frame.pack();
 		// 10. Set the defaultCloseOperation of your frame to
 		// JFrame.EXIT_ON_CLOSE
-
+		frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
 		// 11. Add a key listener to the frame
-
+		frame.addKeyListener(this);
 		// 12. Create a new instance of Random
-
+		simonSays = new Random().nextBoolean();
 		// 13. Use the Random and the speak method to either say
 		// "Simon says press this key" or "Press this key"
+		if (simonSays) {
+			speak("Simon says press this key");
 
+		} else {
+			speak("Press this key");
+
+		}
 		// 14. Above, set the value of simonSays to true/false appropriately
 
 	}
@@ -110,7 +138,7 @@ public class SimonSays extends KeyAdapter {
 	}
 
 	static void speak(String words) {
-		
+
 		if (System.getProperty("os.name").contains("Windows")) {
 			String cmd = "PowerShell -Command \"Add-Type -AssemblyName System.Speech; (New-Object System.Speech.Synthesis.SpeechSynthesizer).Speak('"
 					+ words + "');\"";
